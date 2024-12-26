@@ -5,9 +5,15 @@ const Category = require('../models/category');
 // GET /inventory/categories - Retrieves a list of all inventory categories
 router.get('/', async (req, res) => {
   try {
+    console.log("query to get categories is started -------------");
+
     const categories = await Category.find();
     res.json(categories);
+
+    console.log("query to get categories is finished -------------");
   } catch (err) {
+    console.error("query to get categories is errored - ", err.message);
+
     res.status(500).json({ message: err.message });
   }
 });
@@ -19,15 +25,24 @@ router.get('/:categoryId', getCategory, (req, res) => {
 
 // POST /inventory/categories - Adds a new inventory category
 router.post('/', async (req, res) => {
+  
+  console.log("started building new Category object from - ", req.body);
+
   const category = new Category({
     name: req.body.name,
     description: req.body.description
   });
 
   try {
+    console.log("query to post categories is started -------------");
+    
     const newCategory = await category.save();
     res.status(201).json(newCategory);
+
+    console.log("query to post categories is finished -------------");
   } catch (err) {
+    console.error("query to post categories is errored - ", err.message);
+
     res.status(400).json({ message: err.message });
   }
 });
