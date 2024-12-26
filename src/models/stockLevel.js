@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const stockLevelSchema = new mongoose.Schema({
-  itemId: { type: String, required: true, unique: true },
+  itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'InventoryItem', required: true, unique: true },
   stockLevel: { type: Number, required: true }
 });
 
