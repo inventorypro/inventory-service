@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const InventoryItem = require('../models/inventoryItem');
+const Category = require('../models/category');
+const Supplier = require('../models/supplier');
 
 // Get all inventory items
 router.get('/', async (req, res) => {
   try {
-    const items = await InventoryItem.find();
+    const items = await InventoryItem.find().populate('categoryId').populate('supplierId');
     res.json(items);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -13,8 +15,13 @@ router.get('/', async (req, res) => {
 });
 
 // Get an inventory item by ID
-router.get('/:id', getItem, (req, res) => {
-  res.json(res.item);
+router.get('/:id', getItem, async (req, res) => {
+  try {
+    await res.item.populate('categoryId').populate('supplierId');
+    res.json(res.item);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 // Create a new inventory item
@@ -23,7 +30,7 @@ router.post('/', async (req, res) => {
     itemId: req.body.itemId,
     name: req.body.name,
     description: req.body.description,
-    category: req.body.category,
+    categoryId: req.body.categoryId,
     quantity: req.body.quantity,
     price: req.body.price,
     supplierId: req.body.supplierId,
@@ -46,8 +53,8 @@ router.put('/:id', getItem, async (req, res) => {
   if (req.body.description != null) {
     res.item.description = req.body.description;
   }
-  if (req.body.category != null) {
-    res.item.category = req.body.category;
+  if (req.body.categoryId != null) {
+    res.item.categoryId = req.body.categoryId;
   }
   if (req.body.quantity != null) {
     res.item.quantity = req.body.quantity;

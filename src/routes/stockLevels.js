@@ -5,7 +5,7 @@ const StockLevel = require('../models/stockLevel');
 // GET /inventory/stock-levels - Retrieves current stock levels for all inventory items
 router.get('/', async (req, res) => {
   try {
-    const stockLevels = await StockLevel.find();
+    const stockLevels = await StockLevel.find().populate('itemId');
     res.json(stockLevels);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 // GET /inventory/stock-levels/:itemId - Retrieves the stock level of a specific inventory item by its ID
 router.get('/:itemId', async (req, res) => {
   try {
-    const stockLevel = await StockLevel.findOne({ itemId: req.params.itemId });
+    const stockLevel = await StockLevel.findOne({ itemId: req.params.itemId }).populate('itemId');
     if (!stockLevel) {
       return res.status(404).json({ message: 'Item not found' });
     }
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
         { itemId: update.itemId },
         { stockLevel: update.stockLevel },
         { new: true, upsert: true }
-      );
+      ).populate('itemId');
     });
     const updatedItems = await Promise.all(updatePromises);
     res.json(updatedItems);
