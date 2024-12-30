@@ -1,54 +1,68 @@
 const express = require('express');
 const router = express.Router();
+const logger = require('../logger');
 const Category = require('../models/category');
 
-// GET /inventory/categories - Retrieves a list of all inventory categories
-router.get('/', async (req, res) => {
+// Middleware to get category by ID
+async function getCategory(req, res, next) {
+  let category;
   try {
-    console.log("query to get categories is started -------------");
+    logger.info({ categoryId: req.params.categoryId }, 'Query to find category by ID started');
 
+    category = await Category.findById(req.params.categoryId);
+    if (category == null) {
+      logger.warn({ categoryId: req.params.categoryId }, 'Cannot find the category');
+      return res.status(404).json({ message: 'Cannot find category' });
+    }
+  } catch (err) {
+    logger.error({ err, categoryId: req.params.categoryId }, 'Query to find category by ID errored');
+    return res.status(500).json({ message: err.message });
+  }
+
+  res.category = category;
+  next();
+}
+
+router.get('/', async (req, res) => {
+  logger.info('Request to get categories started');
+  try {
     const categories = await Category.find();
     res.json(categories);
 
-    console.log("query to get categories is finished -------------");
+    logger.info('Request to get categories completed');
   } catch (err) {
-    console.error("query to get categories is errored - ", err.message);
-
+    logger.error({ err }, 'Query to get categories errored');
     res.status(500).json({ message: err.message });
   }
 });
 
-// GET /inventory/categories/:categoryId - Retrieves details of a specific inventory category by its ID
 router.get('/:categoryId', getCategory, (req, res) => {
+  logger.info({ categoryId: req.params.categoryId }, 'Request to get category by ID started');
   res.json(res.category);
+  logger.info({ categoryId: req.params.categoryId }, 'Request to get category by ID completed');
 });
 
-// POST /inventory/categories - Adds a new inventory category
 router.post('/', async (req, res) => {
-  
-  console.log("started building new Category object from - ", req.body);
-
+  logger.info({ payload: req.body }, 'Request to create category started');
   const category = new Category({
     name: req.body.name,
     description: req.body.description
   });
 
   try {
-    console.log("query to post categories is started -------------");
-    
+    logger.info({ payload: req.body }, 'Saving new category');
     const newCategory = await category.save();
     res.status(201).json(newCategory);
-
-    console.log("query to post categories is finished -------------");
+    logger.info({ newCategory }, 'Category created successfully');
   } catch (err) {
-    console.error("query to post categories is errored - ", err.message);
-
+    logger.error({ err, payload: req.body }, 'Request to create category errored');
     res.status(400).json({ message: err.message });
   }
 });
 
-// PUT /inventory/categories/:categoryId - Updates an existing inventory category by its ID
 router.put('/:categoryId', getCategory, async (req, res) => {
+  logger.info({ categoryId: req.params.categoryId, payload: req.body }, 'Request to update category started');
+
   if (req.body.name != null) {
     res.category.name = req.body.name;
   }
@@ -59,35 +73,23 @@ router.put('/:categoryId', getCategory, async (req, res) => {
   try {
     const updatedCategory = await res.category.save();
     res.json(updatedCategory);
+    logger.info({ categoryId: req.params.categoryId, updatedCategory }, 'Category updated successfully');
   } catch (err) {
+    logger.error({ err, categoryId: req.params.categoryId }, 'Request to update category errored');
     res.status(400).json({ message: err.message });
   }
 });
 
-// DELETE /inventory/categories/:categoryId - Deletes an existing inventory category by its ID
 router.delete('/:categoryId', getCategory, async (req, res) => {
+  logger.info({ categoryId: req.params.categoryId }, 'Request to delete category started');
   try {
     await res.category.remove();
     res.json({ message: 'Deleted Category' });
+    logger.info({ categoryId: req.params.categoryId }, 'Category deleted successfully');
   } catch (err) {
+    logger.error({ err, categoryId: req.params.categoryId }, 'Request to delete category errored');
     res.status(500).json({ message: err.message });
   }
 });
-
-// Middleware to get category by ID
-async function getCategory(req, res, next) {
-  let category;
-  try {
-    category = await Category.findById(req.params.categoryId);
-    if (category == null) {
-      return res.status(404).json({ message: 'Cannot find category' });
-    }
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-
-  res.category = category;
-  next();
-}
 
 module.exports = router;
