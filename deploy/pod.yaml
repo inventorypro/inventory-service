@@ -27,3 +27,8 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
+        env: 
+        - name: MONGO_URI 
+          value: 34.171.109.17:27017
+        - name: LOG_LEVEL 
+          value: debug
