@@ -13,6 +13,4 @@ const inventoryItemSchema = new mongoose.Schema({
   status: { type: String, default: 'active' }
 });
 
-const InventoryItem = mongoose.model('InventoryItem', inventoryItemSchema);
-
-module.exports = InventoryItem;
+module.exports = mongoose.models.InventoryItem || mongoose.model('InventoryItem', inventoryItemSchema);

@@ -90,7 +90,7 @@ router.put('/:id', getSupplier, async (req, res) => {
 router.delete('/:id', getSupplier, async (req, res) => {
   logger.info({ supplierId: req.params.id }, 'Request to delete supplier started');
   try {
-    await res.supplier.remove();
+    await Supplier.deleteOne({ supplierId: req.params.id });
     res.json({ message: 'Deleted Supplier' });
     logger.info({ supplierId: req.params.id }, 'Supplier deleted successfully');
   } catch (error) {

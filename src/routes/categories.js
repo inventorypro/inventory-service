@@ -83,7 +83,7 @@ router.put('/:categoryId', getCategory, async (req, res) => {
 router.delete('/:categoryId', getCategory, async (req, res) => {
   logger.info({ categoryId: req.params.categoryId }, 'Request to delete category started');
   try {
-    await res.category.remove();
+    await Category.deleteOne({ _id: res.category._id });
     res.json({ message: 'Deleted Category' });
     logger.info({ categoryId: req.params.categoryId }, 'Category deleted successfully');
   } catch (err) {

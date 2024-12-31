@@ -11,7 +11,9 @@ async function getItem(req, res, next) {
   try {
     logger.info({ itemId: req.params.id }, 'Query to find inventory item by ID started');
 
-    item = await InventoryItem.findById(req.params.id);
+    item = await InventoryItem.findById(req.params.id)
+      .populate('categoryId')
+      .populate('supplierId');
     if (item == null) {
       logger.warn({ itemId: req.params.id }, 'Cannot find the inventory item');
       return res.status(404).json({ message: 'Cannot find inventory item' });
@@ -39,16 +41,10 @@ router.get('/', async (req, res) => {
 });
 
 // Get an inventory item by ID
-router.get('/:id', getItem, async (req, res) => {
+router.get('/:id', getItem, (req, res) => {
   logger.info({ itemId: req.params.id }, 'Request to get inventory item by ID started');
-  try {
-    await res.item.populate('categoryId').populate('supplierId');
-    res.json(res.item);
-    logger.info({ itemId: req.params.id }, 'Request to get inventory item by ID completed');
-  } catch (err) {
-    logger.error({ err, itemId: req.params.id }, 'Query to get inventory item by ID errored');
-    res.status(500).json({ message: err.message });
-  }
+  res.json(res.item);
+  logger.info({ itemId: req.params.id }, 'Request to get inventory item by ID completed');
 });
 
 // Create a new inventory item
@@ -119,7 +115,7 @@ router.put('/:id', getItem, async (req, res) => {
 router.delete('/:id', getItem, async (req, res) => {
   logger.info({ itemId: req.params.id }, 'Request to delete inventory item started');
   try {
-    await res.item.remove();
+    await res.item.deleteOne({ _id: req.params.id });
     res.json({ message: 'Deleted Inventory Item' });
     logger.info({ itemId: req.params.id }, 'Inventory item deleted successfully');
   } catch (err) {

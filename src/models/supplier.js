@@ -6,6 +6,4 @@ const supplierSchema = new mongoose.Schema({
   address: { type: String }
 });
 
-const Supplier = mongoose.model('Supplier', supplierSchema);
-
-module.exports = Supplier;
+module.exports = mongoose.models.Supplier || mongoose.model('Supplier', supplierSchema);

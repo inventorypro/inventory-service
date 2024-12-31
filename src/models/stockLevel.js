@@ -5,6 +5,4 @@ const stockLevelSchema = new mongoose.Schema({
   stockLevel: { type: Number, required: true }
 });
 
-const StockLevel = mongoose.model('StockLevel', stockLevelSchema);
-
-module.exports = StockLevel;
+module.exports = mongoose.models.StockLevel || mongoose.model('StockLevel', stockLevelSchema);
