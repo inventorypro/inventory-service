@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+  beforeEach,
+  afterEach,
+} from 'vitest';
 import request from 'supertest';
 import mongoose from 'mongoose';
 import app from '../../src/app';
@@ -11,7 +19,7 @@ const mockSupplier = {
   _id: new mongoose.Types.ObjectId(),
   name: 'Test Supplier',
   contactInfo: 'test@supplier.com',
-  address: '123 Supplier St.'
+  address: '123 Supplier St.',
 };
 
 beforeAll((done) => {
@@ -40,7 +48,9 @@ describe('Supplier Routes', () => {
   });
 
   it('GET /suppliers/:id - should return a supplier by ID', async () => {
-    const response = await request(server).get(`/suppliers/${mockSupplier._id}`);
+    const response = await request(server).get(
+      `/suppliers/${mockSupplier._id}`
+    );
     expect(response.statusCode).toBe(200);
     expect(response.body.name).toBe(mockSupplier.name);
     expect(response.body.contactInfo).toBe(mockSupplier.contactInfo);
@@ -51,7 +61,7 @@ describe('Supplier Routes', () => {
     const newSupplier = {
       name: 'New Supplier',
       contactInfo: 'new@supplier.com',
-      address: '456 Supplier St.'
+      address: '456 Supplier St.',
     };
     const response = await request(server).post('/suppliers').send(newSupplier);
     expect(response.statusCode).toBe(201);
@@ -64,7 +74,7 @@ describe('Supplier Routes', () => {
     const updatedSupplier = {
       name: 'Updated Supplier',
       contactInfo: 'updated@supplier.com',
-      address: '789 Supplier St.'
+      address: '789 Supplier St.',
     };
     const response = await request(server)
       .put(`/suppliers/${mockSupplier._id}`)
@@ -76,7 +86,9 @@ describe('Supplier Routes', () => {
   });
 
   it('DELETE /suppliers/:id - should delete a supplier by ID', async () => {
-    const response = await request(server).delete(`/suppliers/${mockSupplier._id}`);
+    const response = await request(server).delete(
+      `/suppliers/${mockSupplier._id}`
+    );
     expect(response.statusCode).toBe(200);
     expect(response.body.message).toBe('Deleted Supplier');
   });

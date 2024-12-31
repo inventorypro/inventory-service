@@ -16,7 +16,10 @@ const app = express();
 app.use(require('express-pino-logger')({ logger }));
 app.use(bodyParser.json());
 
-mongoose.connect(`mongodb://${mongoURI}/inventory`, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(`mongodb://${mongoURI}/inventory`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));
 db.once('open', () => console.log('Connected to Database'));

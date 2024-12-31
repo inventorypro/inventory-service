@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+  beforeEach,
+  afterEach,
+} from 'vitest';
 import request from 'supertest';
 import mongoose from 'mongoose';
 import app from '../../src/app';
@@ -12,14 +20,14 @@ let server;
 const mockCategory = {
   _id: new mongoose.Types.ObjectId(),
   name: 'Test Category',
-  description: 'This is a test category'
+  description: 'This is a test category',
 };
 
 const mockSupplier = {
   _id: new mongoose.Types.ObjectId(),
   name: 'Test Supplier',
   contactInfo: 'test@supplier.com',
-  address: '123 Supplier St.'
+  address: '123 Supplier St.',
 };
 
 const mockInventoryItem = {
@@ -32,7 +40,7 @@ const mockInventoryItem = {
   price: 100,
   supplierId: mockSupplier._id,
   reorderLevel: 5,
-  status: 'In Stock'
+  status: 'In Stock',
 };
 
 beforeAll((done) => {
@@ -66,7 +74,9 @@ describe('Inventory Routes', () => {
   });
 
   it('GET /inventory/:id - should return an inventory item by ID', async () => {
-    const response = await request(server).get(`/inventory/${mockInventoryItem._id}`);
+    const response = await request(server).get(
+      `/inventory/${mockInventoryItem._id}`
+    );
     expect(response.statusCode).toBe(200);
     expect(response.body.name).toBe(mockInventoryItem.name);
     expect(response.body.description).toBe(mockInventoryItem.description);
@@ -82,7 +92,7 @@ describe('Inventory Routes', () => {
       price: 200,
       supplierId: mockSupplier._id,
       reorderLevel: 3,
-      status: 'In Stock'
+      status: 'In Stock',
     };
     const response = await request(server).post('/inventory').send(newItem);
     expect(response.statusCode).toBe(201);
@@ -93,7 +103,7 @@ describe('Inventory Routes', () => {
   it('PUT /inventory/:id - should update an existing inventory item', async () => {
     const updatedItem = {
       name: 'Updated Test Item',
-      description: 'This is an updated test item'
+      description: 'This is an updated test item',
     };
     const response = await request(server)
       .put(`/inventory/${mockInventoryItem._id}`)
@@ -104,7 +114,9 @@ describe('Inventory Routes', () => {
   });
 
   it('DELETE /inventory/:id - should delete an inventory item by ID', async () => {
-    const response = await request(server).delete(`/inventory/${mockInventoryItem._id}`);
+    const response = await request(server).delete(
+      `/inventory/${mockInventoryItem._id}`
+    );
     expect(response.statusCode).toBe(200);
     expect(response.body.message).toBe('Deleted Inventory Item');
   });

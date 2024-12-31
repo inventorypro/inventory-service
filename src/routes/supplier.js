@@ -7,7 +7,10 @@ const Supplier = require('../models/supplier');
 async function getSupplier(req, res, next) {
   let supplier;
   try {
-    logger.info({ supplierId: req.params.id }, 'Query to find supplier by ID started');
+    logger.info(
+      { supplierId: req.params.id },
+      'Query to find supplier by ID started'
+    );
 
     supplier = await Supplier.findById(req.params.id);
     if (supplier == null) {
@@ -15,7 +18,10 @@ async function getSupplier(req, res, next) {
       return res.status(404).json({ message: 'Cannot find supplier' });
     }
   } catch (error) {
-    logger.error({ error, supplierId: req.params.id }, 'Query to find supplier by ID errored');
+    logger.error(
+      { error, supplierId: req.params.id },
+      'Query to find supplier by ID errored'
+    );
     return res.status(500).json({ message: error.message });
   }
 
@@ -38,9 +44,15 @@ router.get('/', async (req, res) => {
 
 // GET /suppliers/:id - Retrieves a specific supplier by its ID
 router.get('/:id', getSupplier, (req, res) => {
-  logger.info({ supplierId: req.params.id }, 'Request to get supplier by ID started');
+  logger.info(
+    { supplierId: req.params.id },
+    'Request to get supplier by ID started'
+  );
   res.json(res.supplier);
-  logger.info({ supplierId: req.params.id }, 'Request to get supplier by ID completed');
+  logger.info(
+    { supplierId: req.params.id },
+    'Request to get supplier by ID completed'
+  );
 });
 
 // POST /suppliers - Creates a new supplier
@@ -49,7 +61,7 @@ router.post('/', async (req, res) => {
   const supplier = new Supplier({
     name: req.body.name,
     contactInfo: req.body.contactInfo,
-    address: req.body.address
+    address: req.body.address,
   });
 
   try {
@@ -57,14 +69,20 @@ router.post('/', async (req, res) => {
     res.status(201).json(newSupplier);
     logger.info({ newSupplier }, 'Supplier created successfully');
   } catch (error) {
-    logger.error({ error, payload: req.body }, 'Request to create new supplier errored');
+    logger.error(
+      { error, payload: req.body },
+      'Request to create new supplier errored'
+    );
     res.status(400).json({ message: error.message });
   }
 });
 
 // PUT /suppliers/:id - Updates an existing supplier by its ID
 router.put('/:id', getSupplier, async (req, res) => {
-  logger.info({ supplierId: req.params.id, payload: req.body }, 'Request to update supplier started');
+  logger.info(
+    { supplierId: req.params.id, payload: req.body },
+    'Request to update supplier started'
+  );
 
   if (req.body.name != null) {
     res.supplier.name = req.body.name;
@@ -79,22 +97,34 @@ router.put('/:id', getSupplier, async (req, res) => {
   try {
     const updatedSupplier = await res.supplier.save();
     res.json(updatedSupplier);
-    logger.info({ supplierId: req.params.id, updatedSupplier }, 'Supplier updated successfully');
+    logger.info(
+      { supplierId: req.params.id, updatedSupplier },
+      'Supplier updated successfully'
+    );
   } catch (error) {
-    logger.error({ error, supplierId: req.params.id }, 'Request to update supplier errored');
+    logger.error(
+      { error, supplierId: req.params.id },
+      'Request to update supplier errored'
+    );
     res.status(400).json({ message: error.message });
   }
 });
 
 // DELETE /suppliers/:id - Deletes a supplier by its ID
 router.delete('/:id', getSupplier, async (req, res) => {
-  logger.info({ supplierId: req.params.id }, 'Request to delete supplier started');
+  logger.info(
+    { supplierId: req.params.id },
+    'Request to delete supplier started'
+  );
   try {
     await Supplier.deleteOne({ supplierId: req.params.id });
     res.json({ message: 'Deleted Supplier' });
     logger.info({ supplierId: req.params.id }, 'Supplier deleted successfully');
   } catch (error) {
-    logger.error({ error, supplierId: req.params.id }, 'Request to delete supplier errored');
+    logger.error(
+      { error, supplierId: req.params.id },
+      'Request to delete supplier errored'
+    );
     res.status(500).json({ message: error.message });
   }
 });

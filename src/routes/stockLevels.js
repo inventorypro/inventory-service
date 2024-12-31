@@ -18,17 +18,28 @@ router.get('/', async (req, res) => {
 
 // GET /inventory/stock-levels/:itemId - Retrieves the stock level of a specific inventory item by its ID
 router.get('/:itemId', async (req, res) => {
-  logger.info({ itemId: req.params.itemId }, 'Request to get stock level by item ID started');
+  logger.info(
+    { itemId: req.params.itemId },
+    'Request to get stock level by item ID started'
+  );
   try {
-    const stockLevel = await StockLevel.findOne({ itemId: req.params.itemId }).populate('itemId');
+    const stockLevel = await StockLevel.findOne({
+      itemId: req.params.itemId,
+    }).populate('itemId');
     if (!stockLevel) {
       logger.warn({ itemId: req.params.itemId }, 'Item not found');
       return res.status(404).json({ message: 'Item not found' });
     }
     res.json(stockLevel);
-    logger.info({ itemId: req.params.itemId }, 'Request to get stock level by item ID completed');
+    logger.info(
+      { itemId: req.params.itemId },
+      'Request to get stock level by item ID completed'
+    );
   } catch (error) {
-    logger.error({ error, itemId: req.params.itemId }, 'Query to get stock level by item ID errored');
+    logger.error(
+      { error, itemId: req.params.itemId },
+      'Query to get stock level by item ID errored'
+    );
     res.status(500).json({ message: error.message });
   }
 });
@@ -38,7 +49,7 @@ router.post('/', async (req, res) => {
   logger.info({ payload: req.body }, 'Request to update stock levels started');
   try {
     const updates = req.body;
-    const updatePromises = updates.map(update => {
+    const updatePromises = updates.map((update) => {
       return StockLevel.findOneAndUpdate(
         { itemId: update.itemId },
         { stockLevel: update.stockLevel },
@@ -49,7 +60,10 @@ router.post('/', async (req, res) => {
     res.json(updatedItems);
     logger.info('Stock levels updated successfully');
   } catch (error) {
-    logger.error({ error, payload: req.body }, 'Request to update stock levels errored');
+    logger.error(
+      { error, payload: req.body },
+      'Request to update stock levels errored'
+    );
     res.status(500).json({ message: error.message });
   }
 });

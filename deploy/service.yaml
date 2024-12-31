@@ -5,10 +5,9 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 3000
-    targetPort: 3000
-    nodePort: 31112
-    protocol: TCP
+    - port: 3000
+      targetPort: 3000
+      nodePort: 31112
+      protocol: TCP
   selector:
     app: inventory-service
-    

@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+  beforeEach,
+  afterEach,
+} from 'vitest';
 import request from 'supertest';
 import mongoose from 'mongoose';
 import app from '../../src/app';
@@ -10,11 +18,11 @@ let server;
 const mockCategory = {
   _id: new mongoose.Types.ObjectId(),
   name: 'Test Category',
-  description: 'This is a test category'
+  description: 'This is a test category',
 };
 
 beforeAll((done) => {
-  server = app.listen(4000, done); // Specify a port here, e.g., 4000
+  server = app.listen(3000, done);
 });
 
 afterAll((done) => {
@@ -39,7 +47,9 @@ describe('Category Routes', () => {
   });
 
   it('GET /categories/:categoryId - should return a category by ID', async () => {
-    const response = await request(server).get(`/categories/${mockCategory._id}`);
+    const response = await request(server).get(
+      `/categories/${mockCategory._id}`
+    );
     expect(response.statusCode).toBe(200);
     expect(response.body.name).toBe(mockCategory.name);
     expect(response.body.description).toBe(mockCategory.description);
@@ -48,9 +58,11 @@ describe('Category Routes', () => {
   it('POST /categories - should create a new category', async () => {
     const newCategory = {
       name: 'New Category',
-      description: 'This is a new category'
+      description: 'This is a new category',
     };
-    const response = await request(server).post('/categories').send(newCategory);
+    const response = await request(server)
+      .post('/categories')
+      .send(newCategory);
     expect(response.statusCode).toBe(201);
     expect(response.body.name).toBe(newCategory.name);
     expect(response.body.description).toBe(newCategory.description);
@@ -59,7 +71,7 @@ describe('Category Routes', () => {
   it('PUT /categories/:categoryId - should update an existing category', async () => {
     const updatedCategory = {
       name: 'Updated Category',
-      description: 'This is an updated category'
+      description: 'This is an updated category',
     };
     const response = await request(server)
       .put(`/categories/${mockCategory._id}`)
@@ -70,7 +82,9 @@ describe('Category Routes', () => {
   });
 
   it('DELETE /categories/:categoryId - should delete a category by ID', async () => {
-    const response = await request(server).delete(`/categories/${mockCategory._id}`);
+    const response = await request(server).delete(
+      `/categories/${mockCategory._id}`
+    );
     expect(response.statusCode).toBe(200);
     expect(response.body.message).toBe('Deleted Category');
   });
