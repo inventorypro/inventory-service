@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
+const swaggerSetup = require('./swagger');
 const logger = require('./logger');
 const inventoryRouter = require('./routes/inventory');
 const categoriesRouter = require('./routes/categories');
@@ -13,6 +14,7 @@ const mongoURI = process.env.MONGO_URI || 'localhost:27017';
 
 const app = express();
 
+swaggerSetup(app);
 app.use(require('express-pino-logger')({ logger }));
 app.use(bodyParser.json());
 

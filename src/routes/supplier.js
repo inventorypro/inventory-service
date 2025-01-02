@@ -29,6 +29,24 @@ async function getSupplier(req, res, next) {
   next();
 }
 
+/**
+ * @swagger
+ * /suppliers:
+ *   get:
+ *     summary: Retrieve a list of suppliers
+ *     tags: [Suppliers]
+ *     responses:
+ *       200:
+ *         description: A list of suppliers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Supplier'
+ *       500:
+ *         description: Server error
+ */
 // GET /suppliers - Retrieves a list of all suppliers
 router.get('/', async (req, res) => {
   logger.info('Request to get all suppliers started');
@@ -42,6 +60,31 @@ router.get('/', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /suppliers/{id}:
+ *   get:
+ *     summary: Retrieve a single supplier by ID
+ *     tags: [Suppliers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The supplier ID
+ *     responses:
+ *       200:
+ *         description: A single supplier
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Supplier'
+ *       404:
+ *         description: Supplier not found
+ *       500:
+ *         description: Server error
+ */
 // GET /suppliers/:id - Retrieves a specific supplier by its ID
 router.get('/:id', getSupplier, (req, res) => {
   logger.info(
@@ -55,6 +98,28 @@ router.get('/:id', getSupplier, (req, res) => {
   );
 });
 
+/**
+ * @swagger
+ * /suppliers:
+ *   post:
+ *     summary: Create a new supplier
+ *     tags: [Suppliers]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Supplier'
+ *     responses:
+ *       201:
+ *         description: The created supplier
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Supplier'
+ *       400:
+ *         description: Bad request
+ */
 // POST /suppliers - Creates a new supplier
 router.post('/', async (req, res) => {
   logger.info({ payload: req.body }, 'Request to create new supplier started');
@@ -77,6 +142,39 @@ router.post('/', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /suppliers/{id}:
+ *   put:
+ *     summary: Update a supplier by ID
+ *     tags: [Suppliers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The supplier ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Supplier'
+ *     responses:
+ *       200:
+ *         description: The updated supplier
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Supplier'
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Supplier not found
+ *       500:
+ *         description: Server error
+ */
 // PUT /suppliers/:id - Updates an existing supplier by its ID
 router.put('/:id', getSupplier, async (req, res) => {
   logger.info(
@@ -110,6 +208,27 @@ router.put('/:id', getSupplier, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /suppliers/{id}:
+ *   delete:
+ *     summary: Delete a supplier by ID
+ *     tags: [Suppliers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The supplier ID
+ *     responses:
+ *       200:
+ *         description: Supplier deleted
+ *       404:
+ *         description: Supplier not found
+ *       500:
+ *         description: Server error
+ */
 // DELETE /suppliers/:id - Deletes a supplier by its ID
 router.delete('/:id', getSupplier, async (req, res) => {
   logger.info(

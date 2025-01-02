@@ -31,6 +31,24 @@ async function getItem(req, res, next) {
   next();
 }
 
+/**
+ * @swagger
+ * /inventory:
+ *   get:
+ *     summary: Retrieve a list of inventory items
+ *     tags: [Inventory]
+ *     responses:
+ *       200:
+ *         description: A list of inventory items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/InventoryItem'
+ *       500:
+ *         description: Server error
+ */
 // Get all inventory items
 router.get('/', async (req, res) => {
   logger.info('Request to get all inventory items started');
@@ -46,6 +64,31 @@ router.get('/', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /inventory/{id}:
+ *   get:
+ *     summary: Retrieve a single inventory item by ID
+ *     tags: [Inventory]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The inventory item ID
+ *     responses:
+ *       200:
+ *         description: A single inventory item
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/InventoryItem'
+ *       404:
+ *         description: Inventory item not found
+ *       500:
+ *         description: Server error
+ */
 // Get an inventory item by ID
 router.get('/:id', getItem, (req, res) => {
   logger.info(
@@ -59,6 +102,28 @@ router.get('/:id', getItem, (req, res) => {
   );
 });
 
+/**
+ * @swagger
+ * /inventory:
+ *   post:
+ *     summary: Create a new inventory item
+ *     tags: [Inventory]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/InventoryItem'
+ *     responses:
+ *       201:
+ *         description: The created inventory item
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/InventoryItem'
+ *       400:
+ *         description: Bad request
+ */
 // Create a new inventory item
 router.post('/', async (req, res) => {
   logger.info(
@@ -90,6 +155,39 @@ router.post('/', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /inventory/{id}:
+ *   put:
+ *     summary: Update an inventory item by ID
+ *     tags: [Inventory]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The inventory item ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/InventoryItem'
+ *     responses:
+ *       200:
+ *         description: The updated inventory item
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/InventoryItem'
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Inventory item not found
+ *       500:
+ *         description: Server error
+ */
 // Update an inventory item
 router.put('/:id', getItem, async (req, res) => {
   logger.info(
@@ -138,6 +236,27 @@ router.put('/:id', getItem, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /inventory/{id}:
+ *   delete:
+ *     summary: Delete an inventory item by ID
+ *     tags: [Inventory]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The inventory item ID
+ *     responses:
+ *       200:
+ *         description: Inventory item deleted
+ *       404:
+ *         description: Inventory item not found
+ *       500:
+ *         description: Server error
+ */
 // Delete an inventory item
 router.delete('/:id', getItem, async (req, res) => {
   logger.info(
