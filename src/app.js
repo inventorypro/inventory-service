@@ -9,6 +9,7 @@ const inventoryRouter = require('./routes/inventory');
 const categoriesRouter = require('./routes/categories');
 const stockLevelsRouter = require('./routes/stockLevels');
 const supplierRouter = require('./routes/supplier');
+const filesRouter = require('./routes/files');
 
 const mongoURI = process.env.MONGO_URI || 'localhost:27017';
 
@@ -30,6 +31,7 @@ app.use('/inventory', inventoryRouter);
 app.use('/categories', categoriesRouter);
 app.use('/inventory/stock-level', stockLevelsRouter);
 app.use('/suppliers', supplierRouter);
+app.use('/files', filesRouter);
 
 // Export the app object
 module.exports = app;

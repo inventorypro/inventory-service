@@ -236,12 +236,12 @@ router.delete('/:id', getSupplier, async (req, res) => {
     'Request to delete supplier started'
   );
   try {
-    await Supplier.deleteOne({ supplierId: req.params.id });
+    await Supplier.deleteOne({ _id: req.params.id });
     res.json({ message: 'Deleted Supplier' });
-    logger.info({ supplierId: req.params.id }, 'Supplier deleted successfully');
+    logger.info({ _id: req.params.id }, 'Supplier deleted successfully');
   } catch (error) {
     logger.error(
-      { error, supplierId: req.params.id },
+      { error, _id: req.params.id },
       'Request to delete supplier errored'
     );
     res.status(500).json({ message: error.message });
