@@ -19,16 +19,23 @@ spec:
     metadata:
       labels:
         app: inventory-service
-    spec: 
+    spec:
       terminationGracePeriodSeconds: 1
       containers:
-      - name: inventory-service-pod
-        image: anilshirole/inventory-service:1.0.0
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 3000
-        env: 
-        - name: MONGO_URI 
-          value: 34.171.109.17:27017
-        - name: LOG_LEVEL 
-          value: debug
+        - name: inventory-service-pod
+          image: anilshirole/inventory-service:1.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGO_URI
+              value: 34.171.109.17:27017
+            - name: LOG_LEVEL
+              value: debug
+          volumeMounts:
+            - name: file-storage
+              mountPath: /usr/src/app/uploads
+      volumes:
+        - name: file-storage
+          persistentVolumeClaim:
+            claimName: file-storage-pvc
