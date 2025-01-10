@@ -9,12 +9,14 @@ import {
 } from 'vitest';
 import request from 'supertest';
 import mongoose from 'mongoose';
-import app from '../../src/app';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { app, connectToDatabase } from '../../src/app';
 import InventoryItem from '../../src/models/inventoryItem';
 import Category from '../../src/models/category';
 import Supplier from '../../src/models/supplier';
 
 let server;
+let mongoServer;
 
 // Sample mock data for InventoryItem, Category, and Supplier models
 const mockCategory = {
@@ -43,13 +45,25 @@ const mockInventoryItem = {
   status: 'In Stock',
 };
 
-beforeAll((done) => {
-  server = app.listen(4000, done);
-});
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  const mongoUri = mongoServer.getUri();
 
-afterAll((done) => {
-  server.close(done);
-});
+  await mongoose.disconnect(); // Ensure any previous connections are closed
+  await connectToDatabase(mongoUri); // Connect to the in-memory MongoDB
+
+  server = app.listen(4000, () => {
+    console.log('Test server running on port 4000');
+  });
+}, 30000); // Increase timeout to 30 seconds
+
+afterAll(async () => {
+  await mongoose.disconnect();
+  await mongoServer.stop();
+  if (server) {
+    server.close();
+  }
+}, 30000); // Increase timeout to 30 seconds
 
 beforeEach(async () => {
   // Insert mock category and supplier into the database
@@ -57,14 +71,14 @@ beforeEach(async () => {
   await Supplier.create(mockSupplier);
   // Insert mock inventory item into the database
   await InventoryItem.create(mockInventoryItem);
-});
+}, 30000); // Increase timeout to 30 seconds
 
 afterEach(async () => {
   // Remove mock inventory item, category, and supplier from the database
   await InventoryItem.deleteMany({});
   await Category.deleteMany({});
   await Supplier.deleteMany({});
-});
+}, 30000); // Increase timeout to 30 seconds
 
 describe('Inventory Routes', () => {
   it('GET /inventory - should return all inventory items', async () => {
