@@ -6,3 +6,6 @@ logs
 *.log
 npm-debug.log*
 .env
+
+# file upload directory
+uploads/

@@ -7,5 +7,6 @@ spec:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
-  hostPath:
-    path: '/mnt/data'
+  gcePersistentDisk:
+    pdName: sonarqube-disk
+    fsType: ext4
