@@ -57,6 +57,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'current'
+
+      - name: Read version from package.json
+        id: get_version
+        run: echo "VERSION=$(node -p -e \"require('./package.json').version\")" >> $GITHUB_ENV
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -64,7 +73,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/inventory-service:latest .
-
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/inventory-service:latest
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/inventory-service:${{ env.VERSION }} .
