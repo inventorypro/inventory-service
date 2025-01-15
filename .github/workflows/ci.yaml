@@ -74,3 +74,6 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/inventory-service:${{ env.VERSION }} .
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/inventory-service:${{ env.VERSION }}
