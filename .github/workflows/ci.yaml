@@ -28,6 +28,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    needs: lint
     services:
       mongodb:
         image: mongo:latest
@@ -51,6 +52,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     needs: test
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
