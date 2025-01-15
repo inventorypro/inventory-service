@@ -9,10 +9,12 @@ import {
 } from 'vitest';
 import request from 'supertest';
 import mongoose from 'mongoose';
-import app from '../../src/app';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { app, connectToDatabase } from '../../src/app';
 import Supplier from '../../src/models/supplier';
 
 let server;
+let mongoServer;
 
 // Sample mock data for Supplier model
 const mockSupplier = {
@@ -22,12 +24,22 @@ const mockSupplier = {
   address: '123 Supplier St.',
 };
 
-beforeAll((done) => {
-  server = app.listen(5000, done);
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  const mongoUri = mongoServer.getUri();
+
+  await mongoose.disconnect(); // Ensure any previous connections are closed
+  await connectToDatabase(mongoUri); // Connect to the in-memory MongoDB
+
+  server = app.listen(5000, () => {
+    console.log('Test server running');
+  });
 });
 
-afterAll((done) => {
-  server.close(done);
+afterAll(async () => {
+  await mongoose.disconnect();
+  await mongoServer.stop();
+  server.close();
 });
 
 beforeEach(async () => {
