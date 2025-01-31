@@ -35,6 +35,18 @@ spec:
           volumeMounts:
             - name: file-storage
               mountPath: /usr/src/app/uploads
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 30
       volumes:
         - name: file-storage
           persistentVolumeClaim:
